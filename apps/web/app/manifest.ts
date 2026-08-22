@@ -22,7 +22,7 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       { name: 'Ver produtos', short_name: 'Produtos', url: '/#produtos', icons: [{ src: '/icons/icon-192.png', sizes: '192x192' }] },
-      { name: 'Minha sacola', short_name: 'Sacola', url: '/carrinho', icons: [{ src: '/icons/icon-192.png', sizes: '192x192' }] },
+      { name: 'Entrar na conta', short_name: 'Entrar', url: '/entrar', icons: [{ src: '/icons/icon-192.png', sizes: '192x192' }] },
       { name: 'Guias de beleza', short_name: 'Guias', url: '/guias/como-escolher-cilios', icons: [{ src: '/icons/icon-192.png', sizes: '192x192' }] },
     ],
   };
