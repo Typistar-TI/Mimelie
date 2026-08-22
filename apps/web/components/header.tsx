@@ -25,7 +25,7 @@ export function Header() {
 
   return <>
     <header className="relative z-20 grid h-[76px] grid-cols-[1fr_auto_1fr] items-center border-b border-[#eec0a2] bg-[#fefbf3]/95 px-4 backdrop-blur-md md:h-[86px] md:px-[4vw]">
-      <div className="flex items-center gap-3">
+      <div className="col-start-1 flex min-w-0 items-center gap-3">
         <button className="relative grid size-11 place-items-center rounded-full border border-[#eec0a2] bg-white/65 outline-offset-4 hover:border-[#9f4d4d] focus-visible:outline-2 focus-visible:outline-[#9f4d4d] md:hidden" type="button" aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(true)}>
           <BrandSymbol className="size-9" decorative/>
           <span className="absolute -bottom-0.5 -right-0.5 grid size-[18px] place-items-center rounded-full border-2 border-[#fefbf3] bg-[#9f4d4d] text-white" aria-hidden="true">
@@ -36,11 +36,11 @@ export function Header() {
         <Link href="/" className="hidden w-max outline-offset-4 focus-visible:outline-2 focus-visible:outline-[#9f4d4d] md:block" aria-label={`${brand.name}, início`}><BrandLogo symbolClassName="size-9" wordmarkClassName="text-[2rem]"/></Link>
       </div>
 
-      <nav className="hidden justify-self-center gap-8 text-sm md:flex" aria-label="Navegação principal">
+      <nav className="col-start-2 hidden justify-self-center gap-8 text-sm md:flex" aria-label="Navegação principal">
         {links.map((link) => <Link className="hover:text-[#9f4d4d]" href={link.href} key={link.href}>{link.label}</Link>)}
       </nav>
 
-      <button className="relative grid size-11 justify-self-end place-items-center rounded-full border border-[#eec0a2] bg-white/65 text-[#542a30] outline-offset-4 transition hover:border-[#9f4d4d] hover:text-[#9f4d4d] focus-visible:outline-2 focus-visible:outline-[#9f4d4d]" type="button" aria-label={`Abrir sacola com ${cart.count} ${cart.count === 1 ? 'item' : 'itens'}`} aria-expanded={cart.isOpen} onClick={cart.open}>
+      <button className="relative col-start-3 grid size-11 justify-self-end place-items-center rounded-full border border-[#eec0a2] bg-white/65 text-[#542a30] outline-offset-4 transition hover:border-[#9f4d4d] hover:text-[#9f4d4d] focus-visible:outline-2 focus-visible:outline-[#9f4d4d]" type="button" aria-label={`Abrir sacola com ${cart.count} ${cart.count === 1 ? 'item' : 'itens'}`} aria-expanded={cart.isOpen} onClick={cart.open}>
         <svg className="size-[22px]" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5h2.1l1.35 9.15a1.8 1.8 0 0 0 1.78 1.54h7.88a1.8 1.8 0 0 0 1.75-1.37l1.24-5.07H6.22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/><circle cx="9.2" cy="19" r="1.25" fill="currentColor"/><circle cx="17" cy="19" r="1.25" fill="currentColor"/></svg>
         <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full border-2 border-[#fefbf3] bg-[#9f4d4d] px-1 text-[9px] font-extrabold leading-none text-white" aria-hidden="true">{visibleCount}</span>
       </button>
