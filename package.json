@@ -1,0 +1,23 @@
+{
+  "name": "mimelie",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.13.1",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "db:generate": "pnpm --filter @mimelie/database generate",
+    "db:migrate": "pnpm --filter @mimelie/database migrate",
+    "db:seed": "pnpm --filter @mimelie/database seed"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "prettier": "^3.5.3",
+    "turbo": "^2.5.2",
+    "typescript": "^5.8.3"
+  }
+}

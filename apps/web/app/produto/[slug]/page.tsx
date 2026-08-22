@@ -1,0 +1,12 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { formatBRL } from '@mimelie/ui';
+import { AddProduct } from './product-action';
+import { brand } from '../../../lib/brand';
+import { JsonLd } from '../../../components/json-ld';
+import { pageMetadata } from '../../../lib/seo';
+import { getProduct } from '../../api/catalog.server';
+import { demoProducts } from '../../api/products';
+export function generateStaticParams(){return demoProducts.map(({slug})=>({slug}))}
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const product=await getProduct((await params).slug);return product?pageMetadata({title:product.name,description:product.shortDescription,path:`/produto/${product.slug}`,imageAlt:`${product.name}, da ${brand.name}`}):{robots:{index:false,follow:false}}}
+export default async function ProductPage({params}:{params:Promise<{slug:string}>}){const product=await getProduct((await params).slug);if(!product)notFound();const variant=product.variants[0];if(!variant)notFound();const schema={'@context':'https://schema.org','@type':'Product',name:product.name,description:product.shortDescription,sku:variant.sku,brand:{'@type':'Brand',name:brand.name},offers:{'@type':'Offer',priceCurrency:'BRL',price:(variant.price/100).toFixed(2),availability:'https://schema.org/InStock',url:`${brand.siteUrl}/produto/${product.slug}`}};return <main className="mx-auto min-h-[70vh] max-w-6xl px-6 py-20"><JsonLd data={schema}/><div className="grid gap-14 lg:grid-cols-[1.4fr_.6fr]"><div className="grid h-[520px] place-items-center bg-[#fbebdc] md:h-[650px]"><span className="relative grid aspect-[.78] w-[38%] place-items-center border border-[#542a30] bg-[#fefbf3] shadow-[14px_16px_0_#c3866b]"><i className="absolute inset-3 border border-[#c3866b]"/><b className="font-[family-name:var(--font-display)] text-8xl text-[#c3866b]">{product.name[0]}</b></span></div><section className="py-8"><p className="text-[10px] font-bold uppercase tracking-[.18em]">{product.category} · {variant.name}</p><h1 className="my-5 font-[family-name:var(--font-display)] text-6xl font-medium leading-[.85] md:text-8xl">{product.name}</h1><p className="leading-7">{product.shortDescription}</p><p className="my-8 font-bold">{formatBRL(variant.price)}</p><AddProduct product={product} variant={variant}/><p className="mt-6 text-xs leading-6 text-[#8c5b59]">Fios ultraleves · reutilizável com os cuidados certos · envio para todo o Brasil</p></section></div></main>}
