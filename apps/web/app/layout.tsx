@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import { Cormorant_Garamond, Nunito_Sans } from 'next/font/google';
 import { AnalyticsConsent } from '../components/analytics-consent';
+import { BrandLogo } from '../components/brand-logo';
 import { Header } from '../components/header';
 import { Providers } from '../components/providers';
 import { PwaRegister } from '../components/pwa-register';
@@ -32,5 +33,5 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: '#FEFBF3', colorScheme: 'light', width: 'device-width', initialScale: 1, viewportFit: 'cover' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="pt-BR" className={`${display.variable} ${body.variable}`}><body className="m-0 bg-[#fefbf3] font-[family-name:var(--font-body)] text-[15px] text-[#542a30] antialiased"><Providers><Header />{children}<footer className="flex flex-col items-start justify-between gap-9 bg-[#542a30] px-6 py-16 text-white md:flex-row md:items-end md:px-[6vw]"><div><span className="font-[family-name:var(--font-display)] text-6xl font-medium md:text-8xl">{brand.name}</span><p className="mt-2 text-xs text-white/65">Beleza que acompanha você, sem pesar.</p></div><div className="flex gap-6 text-xs"><a href="mailto:oi@example.com" className="hover:text-[#edbfb3]">Contato</a><Link href="/guias/como-escolher-cilios" className="hover:text-[#edbfb3]">Guias</Link><Link href="/admin" className="hover:text-[#edbfb3]">Painel</Link></div></footer><AnalyticsConsent/><PwaRegister /></Providers></body></html>;
+  return <html lang="pt-BR" className={`${display.variable} ${body.variable}`}><body className="m-0 bg-[#fefbf3] font-[family-name:var(--font-body)] text-[15px] text-[#542a30] antialiased"><Providers><Header />{children}<footer className="flex flex-col items-start justify-between gap-9 bg-[#542a30] px-6 py-16 text-white md:flex-row md:items-end md:px-[6vw]"><div><BrandLogo symbolClassName="size-16 md:size-20" wordmarkClassName="text-6xl text-white md:text-8xl"/><p className="mt-3 text-xs text-white/65">Beleza que acompanha você, sem pesar.</p></div><div className="flex gap-6 text-xs"><a href="mailto:oi@example.com" className="hover:text-[#edbfb3]">Contato</a><Link href="/guias/como-escolher-cilios" className="hover:text-[#edbfb3]">Guias</Link><Link href="/admin" className="hover:text-[#edbfb3]">Painel</Link></div></footer><AnalyticsConsent/><PwaRegister /></Providers></body></html>;
 }
