@@ -7,6 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: siteConfig.siteUrl, changeFrequency: 'weekly', priority: 1 },
     { url: `${siteConfig.siteUrl}/guias/como-escolher-cilios`, changeFrequency: 'monthly', priority: 0.7 },
+    ...['privacidade', 'cookies', 'termos', 'trocas-e-devolucoes', 'entrega'].map((path) => ({ url: `${siteConfig.siteUrl}/${path}`, changeFrequency: 'yearly' as const, priority: 0.3 })),
     ...products.map((product) => ({ url: `${siteConfig.siteUrl}/produto/${product.slug}`, changeFrequency: 'weekly' as const, priority: 0.8 })),
   ];
 }
