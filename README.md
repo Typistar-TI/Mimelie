@@ -150,7 +150,7 @@ No painel da Cloudflare, em **Workers & Pages → mimelie → Settings → Build
 - **Root directory:** `apps/api`
 - **Build command:**
   ```bash
-  pnpm --filter @mimelie/admin build && pnpm --filter @mimelie/web exec opennextjs-cloudflare build && rm -rf ../web/.open-next/assets/admin && cp -r ../admin/dist ../web/.open-next/assets/admin
+  bash ../../scripts/workers-build.sh
   ```
 - **Deploy command:** `pnpm exec wrangler deploy`
 - **Preview builds:** desativados (ou `pnpm exec wrangler versions upload`)
