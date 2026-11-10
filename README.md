@@ -150,10 +150,19 @@ No painel da Cloudflare, em **Workers & Pages → mimelie → Settings → Build
 - **Root directory:** `apps/api`
 - **Build command:**
   ```bash
-  bash ../../scripts/workers-build.sh
+  bash "$(git rev-parse --show-toplevel)/scripts/workers-build.sh"
   ```
 - **Deploy command:** `pnpm exec wrangler deploy`
-- **Preview builds:** desativados (ou `pnpm exec wrangler versions upload`)
+- **Version command:** `pnpm exec wrangler versions upload`
+- **Preview builds:** desativados
+
+O `wrangler` é devDependency de `apps/api` e o deploy roda dentro do root directory, então `pnpm exec wrangler deploy` acha o binário e o `wrangler.jsonc` sem `--filter`.
+
+Não use `pnpm --filter @mimelie/api ...` no campo do dashboard: o `@` é convertido em menção (`[@mimelie](mention:mimelie)`) ao colar, e o shell quebra com `Syntax error: "(" unexpected`. Se precisar de um comando independente do root directory, use:
+
+```bash
+bash -c 'cd "$(git rev-parse --show-toplevel)/apps/api" && pnpm exec wrangler deploy'
+```
 
 O nome do Worker no dashboard precisa ser `mimelie`, igual ao `name` em `apps/api/wrangler.jsonc`.
 
@@ -182,5 +191,3 @@ O painel e a loja são servidos pelo mesmo Worker, em hosts diferentes, o que ma
 ## Backups
 
 `scripts/backup-d1.sh` exporta o D1 e envia o dump para o R2. Agende via Cron Trigger ou GitHub Actions e faça restore drills periódicos.
-
-<!-- build trigger: 2026-11-10T20:10Z -->
