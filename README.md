@@ -1,46 +1,154 @@
 # Mimelie
 
-Monorepo da loja própria, painel operacional, API e processamento assíncrono de uma marca brasileira de maquiagem.
+Loja de maquiagem e curadoria de ofertas em um único produto, com **toda a infraestrutura própria dentro da Cloudflare**.
 
-## Aplicações
+A fusão reúne a vitrine e o checkout da Mimelie com o catálogo de ofertas, cupons e moderação do Promimi. Não há VPS, Docker, PostgreSQL externo, Redis, Railway ou Vercel.
 
-- `apps/web`: loja, PWA, conteúdo editorial e painel em Next.js.
-- `apps/api`: API REST NestJS, autenticação, ABAC e webhooks.
-- `apps/worker`: filas BullMQ e conectores externos.
-- `packages/database`: schema Prisma e seed demonstrativo.
-- `packages/domain`: regras puras de estoque, preço e pedidos.
-- `packages/contracts`: contratos compartilhados da API.
+## Arquitetura
 
-## Desenvolvimento
+```text
+Cloudflare
+├─ Worker  mimelie-web    Next.js 15 + OpenNext (loja, ofertas, conteúdo, conta)
+├─ Worker  mimelie-api    Hono (API, admin SPA, webhooks, filas e cron)
+│  ├─ D1                 commerce + deals + identity + content + ops
+│  ├─ R2                 mídia, PDFs e backups
+│  ├─ KV                 sessão, cache e flags
+│  ├─ Queues             e-mail, publicação, expiração
+│  ├─ Cron Triggers      expiração de ofertas
+│  ├─ Email Service      envio transacional
+│  └─ Static Assets      painel admin (Vite) em /
+└─ Images / Access / Turnstile / WAF / Analytics
+```
 
-1. Copie `.env.example` para `.env` e ajuste os segredos.
-2. Suba PostgreSQL e Redis com `docker compose up -d`.
-3. Execute `pnpm install`, `pnpm db:generate`, `pnpm db:migrate` e `pnpm db:seed`.
-4. Execute `pnpm dev`.
+| Aplicação | Stack | Responsabilidade |
+| --- | --- | --- |
+| `apps/web` | Next 15 + OpenNext | loja, produtos, ofertas, conteúdo, checkout, conta |
+| `apps/admin` | React + Vite | painel de ofertas, produtos, pedidos, moderação e rotinas |
+| `apps/api` | Hono + Drizzle + D1 | API REST, autenticação, admin, filas e cron |
+| `packages/db` | Drizzle + D1 | schema, migrations e seed |
+| `packages/domain` | TypeScript puro | regras de estoque, pedido e desconto |
+| `packages/contracts` | Zod | contratos compartilhados |
+| `packages/ui` | TypeScript | tokens e formatação da loja |
+| `packages/design-system` | React + Tailwind | componentes do painel |
+| `packages/query` | React Query | política de cache do painel |
 
-A vitrine abre em `http://localhost:3000`, a API em `http://localhost:3001/v1` e a documentação em `/docs`.
+## Decisões de produto para caber em 100% Cloudflare
 
-Integrações externas ficam desativadas por feature flags até que as contas e credenciais de produção sejam aprovadas.
+- **Pagamento:** PIX copia e cola gerado no Worker. O pedido fica `PENDING_PAYMENT` e a equipe confirma no painel. Cartão não faz parte do escopo inicial.
+- **Frete:** tabela de CEP/peso no D1, cálculo no Worker. Etiqueta e rastreio são lançados manualmente.
+- **Fiscal:** recibo interno em PDF; NF-e oficial fica fora até nova decisão.
+- **Marketplaces:** integração removida; venda apenas na loja própria.
+- **WhatsApp:** a automação antiga não roda em Worker. O caminho é Cloudflare Containers ou a API oficial da Meta.
+- **E-mail:** Cloudflare Email Service (transacional). Newsletter usa a mesma lista, em volume baixo.
+
+## Rodando localmente
+
+Pré-requisitos: Node 22+, pnpm 10+ e uma conta Cloudflare (apenas para deploy).
+
+```bash
+pnpm install
+cp .env.example .env
+```
+
+Crie `apps/api/.dev.vars`:
+
+```dotenv
+ENVIRONMENT=development
+WEB_ORIGIN=http://localhost:3000
+ADMIN_ORIGIN=http://localhost:5174
+API_PUBLIC_URL=http://localhost:8788
+SESSION_SECRET=dev-session-secret-with-at-least-32-characters
+ADMIN_BOOTSTRAP_TOKEN=dev-bootstrap-token
+```
+
+Aplique o schema e o seed no D1 local:
+
+```bash
+pnpm db:migrate:local
+pnpm db:seed:local
+```
+
+Suba tudo:
+
+```bash
+pnpm dev
+```
+
+- Loja: `http://localhost:3000`
+- API: `http://localhost:8788/v1/health`
+- Painel: `http://localhost:5174` (proxy `/v1` para a API)
+
+### Primeiro administrador
+
+```bash
+curl -X POST http://localhost:8788/v1/auth/bootstrap \
+  -H 'content-type: application/json' \
+  -d '{"email":"admin@mimelie.com","password":"uma-senha-forte","name":"Admin","token":"dev-bootstrap-token"}'
+```
+
+Depois entre em `http://localhost:5174` com esse e-mail e senha. Ative o TOTP no painel antes de produção.
+
+## Deploy na Cloudflare
+
+1. Crie os recursos:
+
+```bash
+wrangler d1 create mimelie-db
+wrangler r2 bucket create mimelie-media
+wrangler kv namespace create SESSIONS
+wrangler queues create mimelie-jobs
+wrangler queues create mimelie-jobs-dlq
+```
+
+2. Preencha `database_id` e o `id` do KV em `apps/api/wrangler.jsonc`.
+
+3. Aplique as migrations e o seed remotos:
+
+```bash
+pnpm db:migrate:remote
+pnpm db:seed:remote
+```
+
+4. Configure os segredos:
+
+```bash
+cd apps/api
+wrangler secret put SESSION_SECRET
+wrangler secret put ADMIN_BOOTSTRAP_TOKEN
+```
+
+5. Ajuste os domínios em `apps/api/wrangler.jsonc` (`WEB_ORIGIN`, `ADMIN_ORIGIN`, `API_PUBLIC_URL`) e em `apps/web/wrangler.jsonc` (`API_INTERNAL_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_ADMIN_URL`).
+
+6. Publique:
+
+```bash
+pnpm deploy:api   # build do admin + Worker da API
+pnpm deploy:jobs  # Worker de filas e cron
+pnpm deploy:web   # OpenNext + Worker da loja
+```
+
+O painel é servido pelo próprio Worker da API em `/`, o que mantém o cookie de sessão na mesma origem. Coloque o domínio do painel atrás do **Cloudflare Access**.
 
 ## O que já está implementado
 
-- Vitrine responsiva em Tailwind CSS, PWA, catálogo, produto, sacola persistente, checkout e acompanhamento protegido por token.
-- React Query com provider central, query keys por domínio, cache do catálogo e mutations de autenticação/checkout.
-- SEO com SSG/ISR-ready, sitemap, robots, canonical e JSON-LD de organização, produto e artigo.
-- API NestJS com Swagger, sessões opacas, magic link, TOTP administrativo, CSRF, CORS, Helmet, rate limit fail-closed e ABAC dinâmico.
-- Prisma/PostgreSQL para catálogo regulatório, lotes, estoque, reservas, pedidos multicanal, pagamento, frete, NF-e, conteúdo, auditoria, consentimento, webhooks e outbox.
-- Worker BullMQ com idempotência, retentativas e adapters isolados para Mercado Pago, Melhor Envio, Mercado Livre e Shopee.
-- Deploy do web via OpenNext/Cloudflare e imagens Railway para API/worker.
+- Catálogo de produtos com variantes, imagens, estoque e busca.
+- Checkout com idempotência, cupom, frete por CEP, PIX e baixa atômica de estoque via trigger no D1.
+- Acompanhamento de pedido por token.
+- Catálogo de ofertas com lojas, categorias, busca, cupons, favoritos, comentários, denúncias e clique rastreado.
+- Autenticação por magic link para clientes e senha + TOTP para a equipe.
+- Painel admin com ofertas, categorias, comentários, usuários, rotinas, integrações, publicações e estatísticas.
+- E-mail transacional, fila de jobs, cron de expiração e outbox.
+- SEO com metadados, JSON-LD, sitemap e PWA.
 
-## Gates antes de produção
+## Próximos passos
 
-- Substituir dados demonstrativos, nome, domínio e endereço de atendimento.
-- Homologar os payloads dos quatro provedores nas contas sandbox/aprovadas; nenhuma flag de marketplace deve ser ligada antes disso.
-- Configurar o Payment Brick com a chave pública do Mercado Pago e concluir o retorno visual de cada método.
-- Configurar Resend, Meta WhatsApp, R2/Cloudflare Images, PostHog e Sentry.
-- Validar CNPJ, políticas LGPD, responsável regulatório, cadastros de produtos, NF-e e embalagem com profissionais responsáveis.
-- Executar o fluxo completo em staging, teste de carga do Worker e restauração de backup antes da publicação.
+- Editor de produtos e upload de imagens no painel.
+- QR code do PIX no checkout.
+- Conciliação de extrato OFX/CSV.
+- Cloudflare Access no domínio do painel.
+- Containers para o bridge de WhatsApp, se ainda for necessário.
+- Testes de integração com `wrangler dev` e D1 local.
 
 ## Backups
 
-`scripts/backup-postgres.sh` produz um dump custom do PostgreSQL e o envia para o bucket configurado por `BACKUP_BUCKET`. Agende-o fora do banco principal e faça um restore drill periódico.
+`scripts/backup-d1.sh` exporta o D1 e envia o dump para o R2. Agende via Cron Trigger ou GitHub Actions e faça restore drills periódicos.

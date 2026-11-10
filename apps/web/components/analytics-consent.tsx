@@ -2,15 +2,14 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import posthog from 'posthog-js';
 import { Drawer } from './drawer';
 
 const KEY = 'mimelie-cookie-preferences-v1';
 type Preferences = { essential: true; analytics: boolean; updatedAt: string };
 
 function startAnalytics() {
-  if (!process.env.NEXT_PUBLIC_POSTHOG_KEY || posthog.__loaded) return;
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, { api_host: '/ingest', persistence: 'localStorage+cookie', autocapture: true, capture_pageview: true });
+  // Cloudflare Web Analytics é ativado no painel da Cloudflare e não usa
+  // cookies nem script de terceiros. Nada a inicializar no cliente.
 }
 
 export function AnalyticsConsent() {
@@ -36,7 +35,7 @@ export function AnalyticsConsent() {
     setSaved(preferences);
     setAnalytics(allowAnalytics);
     setSettingsOpen(false);
-    if (allowAnalytics) startAnalytics(); else if (posthog.__loaded) posthog.opt_out_capturing();
+    if (allowAnalytics) startAnalytics();
   }
 
   return <>

@@ -1,3 +1,29 @@
-'use client';
-import{PageContainer}from'../../components/page-container';import{useAdminOverview}from'../api/administration';const resources=['Catálogo','Estoque','Pedidos','Clientes','Conteúdo','Campanhas','Financeiro','Integrações','Usuários','Auditoria'];
-export default function AdminPage(){const{data,isPending,error}=useAdminOverview();const metrics=[['Produtos',data?.products??'—'],['Pedidos para separar',data?.pendingOrders??'—'],['Clientes',data?.customers??'—'],['Falhas de integração',data?.integrationFailures??'—']];return <main className="min-h-[calc(100vh-86px)] bg-[#fbebdc] py-10"><PageContainer><div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#9f4d4d]">Operação central</p><h1 className="mt-2 font-[family-name:var(--font-display)] text-6xl font-semibold leading-none">Bom dia.</h1></div><span className="w-max rounded-full border border-[#8c5b59] bg-[#fefbf3] px-4 py-2 text-[10px] uppercase tracking-widest">{error?'API indisponível':isPending?'Atualizando':'Operação saudável'}</span></div><nav className="my-8 flex gap-2 overflow-x-auto pb-2">{resources.map(item=><a className="shrink-0 rounded-full border border-[#eec0a2] bg-[#fefbf3] px-4 py-2 text-xs hover:border-[#9f4d4d]" key={item} href={`#${item.toLowerCase()}`}>{item}</a>)}</nav><section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{metrics.map(([label,value],index)=><div className={`rounded-[1.5rem] p-6 ${index===0?'bg-[#542a30] text-white':'border border-[#eec0a2] bg-[#fefbf3]'}`} key={label}><span className="text-[10px] uppercase tracking-widest opacity-70">{label}</span><strong className="mt-5 block font-[family-name:var(--font-display)] text-5xl">{value}</strong></div>)}</section><div className="mt-4 grid gap-4 lg:grid-cols-[1.5fr_.5fr]"><section className="rounded-[1.5rem] border border-[#eec0a2] bg-[#fefbf3] p-7"><h2 className="font-[family-name:var(--font-display)] text-3xl font-semibold">Pedidos que pedem atenção</h2><div className="py-20 text-center"><h3 className="font-[family-name:var(--font-display)] text-4xl">Tudo em dia.</h3><p className="mt-2 text-sm text-[#765052]">Novos pedidos aparecerão aqui com o canal e a próxima ação.</p></div></section><aside className="rounded-[1.5rem] border border-[#eec0a2] bg-[#fefbf3] p-7"><h2 className="font-[family-name:var(--font-display)] text-3xl font-semibold">Canais</h2>{[['Loja própria','Preparando'],['Mercado Livre','Credenciais pendentes'],['Shopee','Credenciais pendentes']].map(([name,state])=><div className="flex justify-between gap-4 border-b border-[#eec0a2] py-4 text-sm" key={name}><span>{name}</span><i className="text-right text-[9px] not-italic uppercase text-[#9f4d4d]">{state}</i></div>)}</aside></div></PageContainer></main>}
+import { PageContainer } from '../../components/page-container';
+
+export default function AdminPage() {
+  const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL ?? 'http://localhost:5174';
+  return (
+    <main className="min-h-[70vh] bg-[#fbebdc] py-20">
+      <PageContainer className="grid place-items-center">
+        <section className="w-full max-w-2xl rounded-[2rem] bg-[#fefbf3] p-7 md:p-12">
+          <p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#9f4d4d]">
+            Operação
+          </p>
+          <h1 className="my-6 font-[family-name:var(--font-display)] text-6xl font-medium leading-[.88] md:text-7xl">
+            Painel operacional.
+          </h1>
+          <p className="max-w-lg text-sm leading-6 text-[#765052]">
+            A curadoria de ofertas, pedidos e produtos agora roda em um aplicativo separado,
+            protegido pelo Cloudflare Access.
+          </p>
+          <a
+            className="mt-8 inline-block rounded-full bg-[#542a30] px-7 py-4 text-xs font-extrabold text-white transition hover:bg-[#9f4d4d]"
+            href={adminUrl}
+          >
+            Abrir o painel ↗
+          </a>
+        </section>
+      </PageContainer>
+    </main>
+  );
+}

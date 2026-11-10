@@ -11,3 +11,7 @@ coverage
 .open-next
 *.tsbuildinfo
 generated
+
+.dev.vars
+
+apps/api/public

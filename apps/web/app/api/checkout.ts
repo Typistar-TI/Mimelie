@@ -2,9 +2,16 @@ import { useMutation } from '@tanstack/react-query';
 import type { CheckoutInput } from '@mimelie/contracts';
 import { protectedRequest } from './client';
 
+export type PixPayload = {
+  copyPaste: string;
+  txid: string;
+  amountCents: number;
+};
+
 export type CheckoutResult = {
-  order: { id: string };
+  order: { id: string; number: string; total: number };
   accessToken: string;
+  pix: PixPayload | null;
 };
 
 export function createCheckout(input: CheckoutInput) {

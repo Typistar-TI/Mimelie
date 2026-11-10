@@ -13,8 +13,10 @@ import { PageContainer } from './page-container';
 
 const links = [
   { label: 'Novidades', href: '/#colecao' },
+  { label: 'Ofertas', href: '/ofertas' },
   { label: 'Como escolher', href: '/guias/como-escolher-cilios' },
   { label: 'Entrega', href: '/entrega' },
+  { label: 'Conta', href: '/conta' },
 ];
 const categories = [
   { label: 'Efeito natural', detail: 'Leve e quase imperceptível', href: '/produto/curva-de-caramelo', surface: 'bg-[#f2dfd0]' },
@@ -60,9 +62,9 @@ export function Header() {
         <Link className="mb-2 rounded-[1.25rem] px-4 py-4 hover:bg-[#fbebdc]" href="/#colecao" onClick={closeMenu}><span className="block font-[family-name:var(--font-display)] text-2xl font-semibold">Novidades</span><small className="text-[#765052]">Conheça a primeira coleção</small></Link>
         <p className="mb-2 mt-4 px-4 text-[9px] font-extrabold uppercase tracking-[.18em] text-[#9f4d4d]">Categorias</p>
         {categories.map((category) => <Link className={`mb-2 rounded-[1.25rem] px-4 py-4 transition-colors hover:brightness-[.98] ${category.surface}`} href={category.href} key={category.label} onClick={closeMenu}><span className="block font-[family-name:var(--font-display)] text-2xl font-semibold">{category.label}</span><small className="text-[#765052]">{category.detail}</small></Link>)}
-        <Link className="mt-2 rounded-[1.25rem] px-4 py-4 hover:bg-[#fbebdc]" href="/guias/como-escolher-cilios" onClick={closeMenu}><span className="block font-[family-name:var(--font-display)] text-2xl font-semibold">Como escolher</span><small className="text-[#765052]">Guias para encontrar seu efeito</small></Link>
+        <Link className="mt-2 rounded-[1.25rem] px-4 py-4 hover:bg-[#fbebdc]" href="/ofertas" onClick={closeMenu}><span className="block font-[family-name:var(--font-display)] text-2xl font-semibold">Ofertas</span><small className="text-[#765052]">Achados de beleza com preço conferido</small></Link><Link className="rounded-[1.25rem] px-4 py-4 hover:bg-[#fbebdc]" href="/guias/como-escolher-cilios" onClick={closeMenu}><span className="block font-[family-name:var(--font-display)] text-2xl font-semibold">Como escolher</span><small className="text-[#765052]">Guias para encontrar seu efeito</small></Link>
         <Link className="rounded-[1.25rem] px-4 py-4 hover:bg-[#fbebdc]" href="/entrega" onClick={closeMenu}><span className="block font-[family-name:var(--font-display)] text-2xl font-semibold">Entrega</span><small className="text-[#765052]">Prazos e rastreamento</small></Link>
-        <div className="mt-auto border-t border-[#eec0a2] pt-5"><Link className="block px-4 py-3 text-sm font-bold hover:bg-[#fbebdc]" href="/entrar" onClick={closeMenu}>Entrar na minha conta</Link><Link className="block px-4 py-3 text-sm text-[#8c5b59] hover:bg-[#fbebdc]" href="/admin" onClick={closeMenu}>Painel administrativo</Link></div>
+        <div className="mt-auto border-t border-[#eec0a2] pt-5"><Link className="block px-4 py-3 text-sm font-bold hover:bg-[#fbebdc]" href="/conta" onClick={closeMenu}>Minha conta</Link><Link className="block px-4 py-3 text-sm text-[#8c5b59] hover:bg-[#fbebdc]" href="/entrar" onClick={closeMenu}>Entrar com link</Link><Link className="block px-4 py-3 text-sm text-[#8c5b59] hover:bg-[#fbebdc]" href="/admin" onClick={closeMenu}>Painel administrativo</Link></div>
       </div>
     </Drawer>
   </>;

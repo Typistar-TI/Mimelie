@@ -1,8 +1,15 @@
 import type { NextConfig } from 'next';
-const api = process.env.API_INTERNAL_URL ?? 'http://localhost:3001';
+
 const config: NextConfig = {
+  agentRules: false,
   transpilePackages: ['@mimelie/contracts', '@mimelie/ui'],
-  images: { formats: ['image/avif', 'image/webp'], remotePatterns: [{ protocol: 'https', hostname: '**.r2.dev' }, { protocol: 'https', hostname: 'imagedelivery.net' }] },
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.r2.dev' },
+      { protocol: 'https', hostname: 'imagedelivery.net' },
+    ],
+  },
   async headers() {
     return [
       {
@@ -24,6 +31,5 @@ const config: NextConfig = {
       },
     ];
   },
-  async rewrites() { return [{ source: '/api/:path*', destination: `${api}/v1/:path*` }]; },
 };
 export default config;

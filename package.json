@@ -3,16 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.13.1",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
+    "dev": "turbo dev --parallel",
+    "dev:web": "pnpm --filter @mimelie/web dev",
+    "dev:api": "pnpm --filter @mimelie/api dev",
+    "dev:admin": "pnpm --filter @mimelie/admin dev",
     "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "test": "turbo test",
     "typecheck": "turbo typecheck",
-    "db:generate": "pnpm --filter @mimelie/database generate",
-    "db:migrate": "pnpm --filter @mimelie/database migrate",
-    "db:seed": "pnpm --filter @mimelie/database seed"
+    "test": "turbo test",
+    "db:generate": "pnpm --filter @mimelie/db generate",
+    "db:migrate:local": "pnpm --filter @mimelie/api exec wrangler d1 migrations apply mimelie-db --local",
+    "db:migrate:remote": "pnpm --filter @mimelie/api exec wrangler d1 migrations apply mimelie-db --remote",
+    "db:seed:local": "pnpm --filter @mimelie/api exec wrangler d1 execute mimelie-db --local --file=../../packages/db/seed.sql",
+    "deploy:api": "pnpm --filter @mimelie/api deploy",
+    "deploy:web": "pnpm --filter @mimelie/web deploy",
+    "db:seed:remote": "pnpm --filter @mimelie/api exec wrangler d1 execute mimelie-db --remote --file=../../packages/db/seed.sql",
+    "deploy:jobs": "pnpm --filter @mimelie/jobs deploy"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",

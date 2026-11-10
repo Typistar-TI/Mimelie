@@ -2,15 +2,32 @@
   "name": "@mimelie/web",
   "version": "0.1.0",
   "private": true,
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview", "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy", "typecheck": "tsc --noEmit", "lint": "tsc --noEmit", "test": "node --test" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "node --test"
+  },
   "dependencies": {
     "@mimelie/contracts": "workspace:*",
     "@mimelie/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.5",
-    "next": "^15.3.1",
-    "posthog-js": "^1.240.1",
+    "next": "^16.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
-  "devDependencies": { "@opennextjs/cloudflare": "^1.20.2", "@tailwindcss/postcss": "^4.1.14", "@types/node": "^22.15.3", "@types/react": "^19.1.2", "@types/react-dom": "^19.1.2", "tailwindcss": "^4.1.14", "typescript": "^5.8.3", "wrangler": "^4.14.4" }
+  "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
+    "@tailwindcss/postcss": "^4.1.14",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.14.4"
+  }
 }

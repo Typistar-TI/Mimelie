@@ -4,35 +4,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/main.ts",
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/main.js",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "tsc -p tsconfig.json --noEmit",
-    "test": "tsx --test src/**/*.test.ts"
+    "dev": "mkdir -p public && (test -f public/index.html || printf '<!doctype html><title>Mimelie API</title>' > public/index.html) && wrangler dev --port 8788",
+    "deploy": "pnpm build:admin && wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test",
+    "build": "tsc --noEmit",
+    "build:admin": "pnpm --filter @mimelie/admin build && rm -rf public && cp -r ../admin/dist public"
   },
   "dependencies": {
-    "@mimelie/config": "workspace:*",
     "@mimelie/contracts": "workspace:*",
-    "@mimelie/database": "workspace:*",
-    "@mimelie/domain": "workspace:*",
-    "@nestjs/common": "^11.1.0",
-    "@nestjs/core": "^11.1.0",
-    "@nestjs/platform-express": "^11.1.0",
-    "@nestjs/swagger": "^11.1.5",
-    "cookie-parser": "^1.4.7",
-    "helmet": "^8.1.0",
-    "ioredis": "^5.6.1",
-    "otplib": "^12.0.1",
-    "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2",
+    "@mimelie/db": "workspace:*",
+    "drizzle-orm": "^0.44.2",
+    "hono": "^4.9.0",
     "zod": "^3.24.3"
   },
   "devDependencies": {
-    "@types/cookie-parser": "^1.4.8",
-    "@types/express": "^5.0.1",
-    "@types/node": "^22.15.3",
-    "tsx": "^4.19.3",
-    "typescript": "^5.8.3"
+    "@cloudflare/workers-types": "^5.20260820.1",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.14.4"
   }
 }

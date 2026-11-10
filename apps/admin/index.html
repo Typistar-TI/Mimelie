@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#fefbf3" />
+    <meta name="description" content="Painel operacional da Mimelie." />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Mimelie — Painel</title>
+    <script>
+      (() => {
+        const theme = localStorage.getItem("mimelie-color-theme");
+        const resolved = theme === "dark" || theme === "light"
+          ? theme
+          : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = resolved;
+        document.documentElement.style.colorScheme = resolved;
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
