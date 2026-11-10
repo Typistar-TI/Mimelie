@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server';
+import { backendProxy } from '../server';
 
 export const dynamic = 'force-dynamic';
 
@@ -6,7 +7,6 @@ async function proxy(
   request: NextRequest,
   context: { params: Promise<{ path: string[] }> },
 ) {
-  const apiBase = process.env.API_INTERNAL_URL ?? 'http://localhost:8788';
   const { path } = await context.params;
   const url = new URL(request.url);
   const headers = new Headers(request.headers);
@@ -22,10 +22,7 @@ async function proxy(
     duplex: 'half',
     redirect: 'manual',
   } as RequestInit;
-  const response = await fetch(
-    `${apiBase}/v1/${path.join('/')}${url.search}`,
-    init,
-  );
+  const response = await backendProxy(`/${path.join('/')}${url.search}`, init);
   return new Response(response.body, {
     status: response.status,
     headers: new Headers(response.headers),

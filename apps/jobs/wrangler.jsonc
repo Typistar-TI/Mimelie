@@ -9,7 +9,7 @@
     {
       "binding": "DB",
       "database_name": "mimelie-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_id": "17f108f5-394a-453a-9b3b-a636f4e6d63c"
     }
   ],
   "queues": {

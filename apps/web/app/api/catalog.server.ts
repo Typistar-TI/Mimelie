@@ -20,7 +20,9 @@ export async function getProduct(slug: string): Promise<Product | undefined> {
       `/catalog/products/${encodeURIComponent(slug)}`,
       { next: { revalidate: 300 } },
     );
-    return response.ok ? ((await response.json()) as Product) : undefined;
+    return response.ok
+      ? ((await response.json()) as Product)
+      : demoProducts.find((product) => product.slug === slug);
   } catch {
     return demoProducts.find((product) => product.slug === slug);
   }

@@ -32,6 +32,22 @@ Cloudflare
 | `packages/design-system` | React + Tailwind | componentes do painel |
 | `packages/query` | React Query | política de cache do painel |
 
+## Ambiente publicado
+
+- Loja: https://mimelie-web.vira-ia-br.workers.dev
+- API + painel: https://mimelie-api.vira-ia-br.workers.dev
+- Jobs: https://mimelie-jobs.vira-ia-br.workers.dev
+- D1: `mimelie-db`
+- R2: `mimelie-media` e `mimelie-next-cache`
+- KV: `SESSIONS`
+- Filas: `mimelie-jobs` e `mimelie-jobs-dlq`
+
+O painel é servido pelo Worker da API em `/`, na mesma origem da sessão. Entre com o e-mail e a senha criados no bootstrap e ative o TOTP no primeiro acesso.
+
+**E-mail:** o binding `send_email` já está publicado, mas o domínio de envio precisa ser habilitado no painel da Cloudflare (Email Service) para os magic links e avisos de pedido saírem. O login do painel por senha funciona sem essa etapa.
+
+Esses endereços `workers.dev` são o preview publicado. Ao configurar os domínios definitivos, atualize `WEB_ORIGIN`, `ADMIN_ORIGIN` e `API_PUBLIC_URL` em `apps/api/wrangler.jsonc` e `API_INTERNAL_URL`, `NEXT_PUBLIC_SITE_URL` e `NEXT_PUBLIC_ADMIN_URL` em `apps/web/wrangler.jsonc`.
+
 ## Decisões de produto para caber em 100% Cloudflare
 
 - **Pagamento:** PIX copia e cola gerado no Worker. O pedido fica `PENDING_PAYMENT` e a equipe confirma no painel. Cartão não faz parte do escopo inicial.

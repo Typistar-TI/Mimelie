@@ -15,22 +15,22 @@
     {
       "binding": "DB",
       "database_name": "mimelie-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "17f108f5-394a-453a-9b3b-a636f4e6d63c",
       "migrations_dir": "../../packages/db/migrations"
     }
   ],
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "mimelie-media" }],
   "kv_namespaces": [
-    { "binding": "SESSIONS", "id": "REPLACE_WITH_KV_NAMESPACE_ID" }
+    { "binding": "SESSIONS", "id": "1c186fda0ac54e1daaf73b717d96f0bc" }
   ],
   "queues": {
     "producers": [{ "binding": "JOBS", "queue": "mimelie-jobs" }]
   },
   "vars": {
     "ENVIRONMENT": "production",
-    "WEB_ORIGIN": "https://mimelie.com",
-    "ADMIN_ORIGIN": "https://admin.mimelie.com",
-    "API_PUBLIC_URL": "https://admin.mimelie.com",
+    "WEB_ORIGIN": "https://mimelie-web.vira-ia-br.workers.dev",
+    "ADMIN_ORIGIN": "https://mimelie-api.vira-ia-br.workers.dev",
+    "API_PUBLIC_URL": "https://mimelie-api.vira-ia-br.workers.dev",
     "PIX_KEY": "oi@mimelie.com.br",
     "PIX_MERCHANT_NAME": "MIMELIE",
     "PIX_MERCHANT_CITY": "SAO PAULO"

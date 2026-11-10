@@ -3,12 +3,26 @@
   "name": "mimelie-web",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-08-01",
-  "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
-  "observability": { "enabled": true },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
   "vars": {
-    "API_INTERNAL_URL": "https://admin.mimelie.com",
-    "NEXT_PUBLIC_SITE_URL": "https://mimelie.com",
-    "NEXT_PUBLIC_ADMIN_URL": "https://admin.mimelie.com"
-  }
+    "API_INTERNAL_URL": "https://mimelie-api.vira-ia-br.workers.dev",
+    "NEXT_PUBLIC_SITE_URL": "https://mimelie-web.vira-ia-br.workers.dev",
+    "NEXT_PUBLIC_ADMIN_URL": "https://mimelie-api.vira-ia-br.workers.dev"
+  },
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "mimelie-next-cache"
+    }
+  ],
+  "services": [{ "binding": "API", "service": "mimelie-api" }]
 }
