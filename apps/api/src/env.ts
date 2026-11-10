@@ -1,5 +1,19 @@
 import type { D1Database, KVNamespace, R2Bucket } from "@cloudflare/workers-types";
 
+export type EmailBinding = {
+  send(message: {
+    to: string;
+    from: string;
+    subject: string;
+    html?: string;
+    text?: string;
+  }): Promise<unknown>;
+};
+
+export type AssetsBinding = {
+  fetch(request: Request): Promise<Response>;
+};
+
 export type QueueBinding = {
   send(message: JobMessage): Promise<void>;
 };
@@ -15,9 +29,12 @@ export type JobMessage =
 
 export type Env = {
   DB: D1Database;
+  ASSETS: AssetsBinding;
   MEDIA: R2Bucket;
   SESSIONS: KVNamespace;
   JOBS?: QueueBinding;
+  EMAIL?: EmailBinding;
+  EMAIL_FROM: string;
   ENVIRONMENT: string;
   WEB_ORIGIN: string;
   ADMIN_ORIGIN: string;

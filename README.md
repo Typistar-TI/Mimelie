@@ -9,23 +9,21 @@ A fusão reúne a vitrine e o checkout da Mimelie com o catálogo de ofertas, cu
 ```text
 Cloudflare
 ├─ Worker  mimelie-web    Next.js 16 + OpenNext (loja, ofertas, conteúdo, conta)
-├─ Worker  mimelie-admin  Vite SPA + proxy /v1 para a API
-├─ Worker  mimelie-api    Hono (API e webhooks)
-├─ Worker  mimelie-jobs   Queues + Cron Triggers
+├─ Worker  mimelie-api    Hono (API e webhooks) + painel + Queues + Cron
 │  ├─ D1                 commerce + deals + identity + content + ops
 │  ├─ R2                 mídia, PDFs e backups
 │  ├─ KV                 sessão, cache e flags
 │  ├─ Queues             e-mail, publicação, expiração
 │  ├─ Cron Triggers      expiração de ofertas
 │  └─ Email Service      envio transacional
-└─ Images / Access / Turnstile / WAF / Analytics
+└─ Images / Turnstile / WAF / Analytics
 ```
 
 | Aplicação | Stack | Responsabilidade |
 | --- | --- | --- |
 | `apps/web` | Next 16 + OpenNext | loja, produtos, ofertas, conteúdo, checkout, conta |
 | `apps/admin` | React + Vite | painel de ofertas, produtos, pedidos, moderação e rotinas |
-| `apps/api` | Hono + Drizzle + D1 | API REST, autenticação, admin, filas e cron |
+| `apps/api` | Hono + Drizzle + D1 | API REST, autenticação, painel, filas e cron |
 | `packages/db` | Drizzle + D1 | schema, migrations e seed |
 | `packages/domain` | TypeScript puro | regras de estoque, pedido e desconto |
 | `packages/contracts` | Zod | contratos compartilhados |
@@ -38,17 +36,17 @@ Cloudflare
 - Loja: https://mimelie.vira.ia.br
 - Painel: https://painel-mimelie.vira.ia.br
 - API: https://api-mimelie.vira.ia.br
-- Jobs: interno, no Worker `mimelie-jobs`
+- Jobs: dentro do Worker `mimelie-api`
 - D1: `mimelie-db`
 - R2: `mimelie-media` e `mimelie-next-cache`
 - KV: `SESSIONS`
 - Filas: `mimelie-jobs` e `mimelie-jobs-dlq`
 
-O painel é um Worker separado (`mimelie-admin`) com os arquivos estáticos do Vite e um proxy `/v1/*` para a API via service binding. Assim o cookie de sessão fica na mesma origem do painel e a API continua pública para a loja. Entre com o e-mail e a senha criados no bootstrap e ative o TOTP no primeiro acesso.
+O painel é servido pelo mesmo Worker da API no host `painel-mimelie.vira.ia.br`: o Worker entrega os arquivos do Vite e encaminha `/v1/*` para o Hono. Assim o cookie de sessão fica na mesma origem do painel e a API continua pública em `api-mimelie.vira.ia.br` para a loja. Entre com o e-mail e a senha criados no bootstrap e ative o TOTP no primeiro acesso.
 
 **E-mail:** o binding `send_email` já está publicado, mas o domínio de envio precisa ser habilitado no painel da Cloudflare (Email Service) para os magic links e avisos de pedido saírem. O login do painel por senha funciona sem essa etapa.
 
-A zona `vira.ia.br` tem uma rota curinga `*.vira.ia.br/*` apontando para o Worker `vira`. Por isso a Mimelie usa rotas explícitas `mimelie.vira.ia.br/*`, `painel-mimelie.vira.ia.br/*` e `api-mimelie.vira.ia.br/*`, que têm precedência. Se recriar os Workers, mantenha essas rotas em `apps/web/wrangler.jsonc`, `apps/admin/wrangler.jsonc` e `apps/api/wrangler.jsonc`.
+A zona `vira.ia.br` tem uma rota curinga `*.vira.ia.br/*` apontando para o Worker `vira`. Por isso a Mimelie usa rotas explícitas `mimelie.vira.ia.br/*` no Worker web e `painel-mimelie.vira.ia.br/*` + `api-mimelie.vira.ia.br/*` no Worker da API, que têm precedência. Se recriar os Workers, mantenha essas rotas em `apps/web/wrangler.jsonc` e `apps/api/wrangler.jsonc`.
 
 ## Decisões de produto para caber em 100% Cloudflare
 
@@ -140,9 +138,7 @@ wrangler secret put ADMIN_BOOTSTRAP_TOKEN
 6. Publique:
 
 ```bash
-pnpm deploy:api    # Worker da API
-pnpm deploy:admin  # build do Vite + Worker do painel
-pnpm deploy:jobs   # Worker de filas e cron
+pnpm deploy:api    # build do painel + Worker da API + filas/cron
 pnpm deploy:web    # OpenNext + Worker da loja
 ```
 

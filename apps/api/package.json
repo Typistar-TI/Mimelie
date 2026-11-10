@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "mkdir -p public && (test -f public/index.html || printf '<!doctype html><title>Mimelie API</title>' > public/index.html) && wrangler dev --port 8788",
-    "deploy": "wrangler deploy",
+    "deploy": "pnpm build:admin && wrangler deploy",
     "typecheck": "tsc --noEmit",
     "test": "node --test",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "build:admin": "pnpm --filter @mimelie/admin build && rm -rf public && cp -r ../admin/dist public"
   },
   "dependencies": {
     "@mimelie/contracts": "workspace:*",

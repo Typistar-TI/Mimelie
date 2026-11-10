@@ -35,6 +35,15 @@
         "binding": "JOBS",
         "queue": "mimelie-jobs"
       }
+    ],
+    "consumers": [
+      {
+        "queue": "mimelie-jobs",
+        "max_batch_size": 10,
+        "max_batch_timeout": 30,
+        "max_retries": 3,
+        "dead_letter_queue": "mimelie-jobs-dlq"
+      }
     ]
   },
   "vars": {
@@ -44,12 +53,33 @@
     "API_PUBLIC_URL": "https://api-mimelie.vira.ia.br",
     "PIX_KEY": "oi@mimelie.com.br",
     "PIX_MERCHANT_NAME": "MIMELIE",
-    "PIX_MERCHANT_CITY": "SAO PAULO"
+    "PIX_MERCHANT_CITY": "SAO PAULO",
+    "EMAIL_FROM": "oi@mimelie.com.br"
   },
   "routes": [
     {
       "pattern": "api-mimelie.vira.ia.br/*",
       "zone_name": "vira.ia.br"
+    },
+    {
+      "pattern": "painel-mimelie.vira.ia.br/*",
+      "zone_name": "vira.ia.br"
+    }
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
+  "send_email": [
+    {
+      "name": "EMAIL"
     }
   ]
 }

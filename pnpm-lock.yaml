@@ -60,9 +60,6 @@ importers:
       vite:
         specifier: ^6.3.5
         version: 6.4.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.36.0)(tsx@4.23.12)(yaml@2.9.1)
-      wrangler:
-        specifier: 4.159.0
-        version: 4.159.0(@cloudflare/workers-types@5.20261110.1)(@types/node@22.20.1)
 
   apps/api:
     dependencies:
@@ -81,25 +78,6 @@ importers:
       zod:
         specifier: ^3.24.3
         version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^5.20260820.1
-        version: 5.20261110.1
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-      wrangler:
-        specifier: ^4.159.0
-        version: 4.159.0(@cloudflare/workers-types@5.20261110.1)(@types/node@22.20.1)
-
-  apps/jobs:
-    dependencies:
-      '@mimelie/db':
-        specifier: workspace:*
-        version: link:../../packages/db
-      drizzle-orm:
-        specifier: ^0.44.2
-        version: 0.44.7(@cloudflare/workers-types@5.20261110.1)(@prisma/client@6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3))(prisma@6.19.3(typescript@5.9.3))
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^5.20260820.1

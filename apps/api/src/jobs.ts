@@ -1,44 +1,18 @@
 import { and, eq, lte } from "drizzle-orm";
 import type {
-  D1Database,
   ExecutionContext,
   MessageBatch,
   ScheduledController,
 } from "@cloudflare/workers-types";
 import {
-  createDb,
   newsletterSubscribers,
   offers,
   orders,
   publications,
   routineExecutions,
 } from "@mimelie/db";
-
-type EmailBinding = {
-  send(message: {
-    to: string;
-    from: string;
-    subject: string;
-    html?: string;
-    text?: string;
-  }): Promise<unknown>;
-};
-
-type Env = {
-  DB: D1Database;
-  EMAIL?: EmailBinding;
-  EMAIL_FROM: string;
-  ENVIRONMENT: string;
-};
-
-type JobMessage =
-  | { type: "magic-link"; email: string; url: string }
-  | { type: "order.created"; orderId: string }
-  | { type: "order.paid"; orderId: string }
-  | { type: "offer.expire"; offerId: string }
-  | { type: "publication.send"; publicationId: string }
-  | { type: "routine.run"; executionId: string }
-  | { type: "newsletter.welcome"; subscriberId: string };
+import type { Env, JobMessage } from "./env.js";
+import { getDb } from "./lib/db.js";
 
 function brl(cents: number): string {
   return new Intl.NumberFormat("pt-BR", {
@@ -65,7 +39,7 @@ async function sendEmail(
 }
 
 async function processJob(job: JobMessage, env: Env): Promise<void> {
-  const db = createDb(env.DB);
+  const db = getDb(env);
   switch (job.type) {
     case "magic-link": {
       await sendEmail(env, {
@@ -197,7 +171,7 @@ export async function handleScheduled(
 ): Promise<void> {
   ctx.waitUntil(
     (async () => {
-      const db = createDb(env.DB);
+      const db = getDb(env);
       await db
         .update(offers)
         .set({ status: "EXPIRED", updatedAt: new Date() })
