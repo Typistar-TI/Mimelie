@@ -9,7 +9,7 @@ const adminUrl =
   process.env.NEXT_PUBLIC_ADMIN_URL ??
   (process.env.NODE_ENV === 'development'
     ? 'http://localhost:5174'
-    : 'https://mimelie-api.vira.ia.br');
+    : 'https://painel-mimelie.vira.ia.br');
 
 const config: NextConfig = {
   agentRules: false,

@@ -21,7 +21,8 @@
     "deploy:api": "pnpm --filter @mimelie/api run deploy",
     "deploy:web": "pnpm --filter @mimelie/web run deploy",
     "db:seed:remote": "pnpm --filter @mimelie/api exec wrangler d1 execute mimelie-db --remote --file=../../packages/db/seed.sql",
-    "deploy:jobs": "pnpm --filter @mimelie/jobs run deploy"
+    "deploy:jobs": "pnpm --filter @mimelie/jobs run deploy",
+    "deploy:admin": "pnpm --filter @mimelie/admin run deploy"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",

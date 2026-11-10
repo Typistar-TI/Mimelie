@@ -14,9 +14,9 @@
     "enabled": true
   },
   "vars": {
-    "API_INTERNAL_URL": "https://mimelie-api.vira.ia.br",
+    "API_INTERNAL_URL": "https://api-mimelie.vira.ia.br",
     "NEXT_PUBLIC_SITE_URL": "https://mimelie.vira.ia.br",
-    "NEXT_PUBLIC_ADMIN_URL": "https://mimelie-api.vira.ia.br"
+    "NEXT_PUBLIC_ADMIN_URL": "https://painel-mimelie.vira.ia.br"
   },
   "r2_buckets": [
     {
