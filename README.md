@@ -182,3 +182,5 @@ O painel e a loja são servidos pelo mesmo Worker, em hosts diferentes, o que ma
 ## Backups
 
 `scripts/backup-d1.sh` exporta o D1 e envia o dump para o R2. Agende via Cron Trigger ou GitHub Actions e faça restore drills periódicos.
+
+<!-- build trigger: 2026-11-10T20:10Z -->
