@@ -143,6 +143,20 @@ wrangler secret put ADMIN_BOOTSTRAP_TOKEN
 pnpm deploy:api    # build do painel + OpenNext + Worker único
 ```
 
+### Workers Builds
+
+No painel da Cloudflare, em **Workers & Pages → mimelie → Settings → Build**:
+
+- **Root directory:** `apps/api`
+- **Build command:**
+  ```bash
+  pnpm --filter @mimelie/admin build && pnpm --filter @mimelie/web exec opennextjs-cloudflare build && rm -rf ../web/.open-next/assets/admin && cp -r ../admin/dist ../web/.open-next/assets/admin
+  ```
+- **Deploy command:** `pnpm exec wrangler deploy`
+- **Preview builds:** desativados (ou `pnpm exec wrangler versions upload`)
+
+O nome do Worker no dashboard precisa ser `mimelie`, igual ao `name` em `apps/api/wrangler.jsonc`.
+
 O painel e a loja são servidos pelo mesmo Worker, em hosts diferentes, o que mantém o cookie de sessão do painel na mesma origem.
 
 ## O que já está implementado
