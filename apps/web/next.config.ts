@@ -1,7 +1,22 @@
 import type { NextConfig } from 'next';
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : 'https://mimelie.vira.ia.br');
+const adminUrl =
+  process.env.NEXT_PUBLIC_ADMIN_URL ??
+  (process.env.NODE_ENV === 'development'
+    ? 'http://localhost:5174'
+    : 'https://mimelie-api.vira.ia.br');
+
 const config: NextConfig = {
   agentRules: false,
+  env: {
+    NEXT_PUBLIC_SITE_URL: siteUrl,
+    NEXT_PUBLIC_ADMIN_URL: adminUrl,
+  },
   transpilePackages: ['@mimelie/contracts', '@mimelie/ui'],
   images: {
     formats: ['image/avif', 'image/webp'],
