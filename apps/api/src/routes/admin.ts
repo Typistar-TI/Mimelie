@@ -159,6 +159,34 @@ adminRoutes.post("/admin/offers", async (c) => {
       createdById: user.id,
     })
     .returning();
+  if (status === "PUBLISHED") {
+    const enabled = await db
+      .select({ provider: integrations.provider })
+      .from(integrations)
+      .where(eq(integrations.enabled, true));
+    if (enabled.length) {
+      const created = await db
+        .insert(publications)
+        .values(
+          enabled.map((integration) => ({
+            offerId: inserted[0]!.id,
+            destination: integration.provider,
+            status: "PENDING" as const,
+          })),
+        )
+        .returning({ id: publications.id });
+      if (c.env.JOBS) {
+        for (const publication of created) {
+          c.executionCtx.waitUntil(
+            c.env.JOBS.send({
+              type: "publication.send",
+              publicationId: publication.id,
+            }),
+          );
+        }
+      }
+    }
+  }
   return c.json(
     {
       data: serializeOffer(
@@ -226,6 +254,44 @@ adminRoutes.patch("/admin/offers/:id", async (c) => {
     })
     .where(eq(offers.id, offer.id))
     .returning();
+  if (updated[0]!.status === "PUBLISHED") {
+    const existing = await db
+      .select({ destination: publications.destination })
+      .from(publications)
+      .where(eq(publications.offerId, updated[0]!.id));
+    const enabled = await db
+      .select({ provider: integrations.provider })
+      .from(integrations)
+      .where(eq(integrations.enabled, true));
+    const missing = enabled.filter(
+      (integration) =>
+        !existing.some(
+          (publication) => publication.destination === integration.provider,
+        ),
+    );
+    if (missing.length) {
+      const created = await db
+        .insert(publications)
+        .values(
+          missing.map((integration) => ({
+            offerId: updated[0]!.id,
+            destination: integration.provider,
+            status: "PENDING" as const,
+          })),
+        )
+        .returning({ id: publications.id });
+      if (c.env.JOBS) {
+        for (const publication of created) {
+          c.executionCtx.waitUntil(
+            c.env.JOBS.send({
+              type: "publication.send",
+              publicationId: publication.id,
+            }),
+          );
+        }
+      }
+    }
+  }
   const storeRows = await db
     .select()
     .from(stores)
@@ -398,6 +464,33 @@ adminRoutes.get("/admin/routines", async (c) => {
   return c.json({ data: rows });
 });
 
+adminRoutes.post("/admin/routines", async (c) => {
+  requireStaff(c);
+  const input = await parseBody(
+    c,
+    z.object({
+      name: z.string().trim().min(2).max(120),
+      enabled: z.boolean().default(false),
+      scheduleCron: z.string().max(80).default("0 * * * *"),
+      dailyLimit: z.coerce.number().int().positive().max(10_000).default(100),
+      filters: z.record(z.unknown()).default({}),
+      destinations: z.array(z.string().max(80)).default([]),
+    }),
+  );
+  const inserted = await getDb(c.env)
+    .insert(routines)
+    .values({
+      name: input.name,
+      enabled: input.enabled,
+      scheduleCron: input.scheduleCron,
+      dailyLimit: input.dailyLimit,
+      filters: input.filters,
+      destinations: input.destinations,
+    })
+    .returning();
+  return c.json({ data: inserted[0] }, 201);
+});
+
 adminRoutes.patch("/admin/routines/:id", async (c) => {
   requireStaff(c);
   const input = await parseBody(
@@ -425,6 +518,11 @@ adminRoutes.post("/admin/routines/:id/run", async (c) => {
     .insert(routineExecutions)
     .values({ routineId: c.req.param("id"), status: "QUEUED" })
     .returning();
+  if (c.env.JOBS && inserted[0]) {
+    c.executionCtx.waitUntil(
+      c.env.JOBS.send({ type: "routine.run", executionId: inserted[0].id }),
+    );
+  }
   return c.json({ data: inserted[0] }, 202);
 });
 
@@ -582,6 +680,15 @@ adminRoutes.post("/admin/products", async (c) => {
           }),
         )
         .min(1),
+      images: z
+        .array(
+          z.object({
+            key: z.string().min(1).max(300),
+            alt: z.string().min(1).max(200),
+          }),
+        )
+        .max(8)
+        .optional(),
     }),
   );
   const db = getDb(c.env);
@@ -611,13 +718,35 @@ adminRoutes.post("/admin/products", async (c) => {
         weightGrams: variant.weightGrams,
       }),
     ),
+    ...(input.images ?? []).map((image, index) =>
+      db.insert(productImages).values({
+        productId,
+        key: image.key,
+        alt: image.alt,
+        position: index,
+      }),
+    ),
   ] as [any, ...any[]]);
   const product = (inserted[0] as (typeof products.$inferSelect)[])[0]!;
   const variantRows = await db
     .select()
     .from(variants)
     .where(eq(variants.productId, productId));
-  return c.json({ data: serializeProduct(product, variantRows, []) }, 201);
+  const imageRows = await db
+    .select()
+    .from(productImages)
+    .where(eq(productImages.productId, productId))
+    .orderBy(productImages.position);
+  return c.json(
+    {
+      data: serializeProduct(
+        product,
+        variantRows,
+        imageRows.map((image) => ({ key: image.key, alt: image.alt })),
+      ),
+    },
+    201,
+  );
 });
 
 adminRoutes.patch("/admin/products/:id", async (c) => {
@@ -630,17 +759,42 @@ adminRoutes.patch("/admin/products/:id", async (c) => {
         shortDescription: z.string().min(2).max(280).optional(),
         category: z.string().min(2).max(80).optional(),
         status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).optional(),
+        images: z
+          .array(
+            z.object({
+              key: z.string().min(1).max(300),
+              alt: z.string().min(1).max(200),
+            }),
+          )
+          .max(8)
+          .optional(),
       })
       .partial(),
   );
-  const updated = await getDb(c.env)
+  const db = getDb(c.env);
+  const id = c.req.param("id");
+  const { images, ...productInput } = input;
+  if (images) {
+    await db.batch([
+      db.delete(productImages).where(eq(productImages.productId, id)),
+      ...images.map((image, index) =>
+        db.insert(productImages).values({
+          productId: id,
+          key: image.key,
+          alt: image.alt,
+          position: index,
+        }),
+      ),
+    ] as [any, ...any[]]);
+  }
+  const updated = await db
     .update(products)
     .set({
-      ...input,
-      ...(input.status === "ACTIVE" ? { publishedAt: new Date() } : {}),
+      ...productInput,
+      ...(productInput.status === "ACTIVE" ? { publishedAt: new Date() } : {}),
       updatedAt: new Date(),
     })
-    .where(eq(products.id, c.req.param("id")))
+    .where(eq(products.id, id))
     .returning();
   return c.json({ data: updated[0] });
 });

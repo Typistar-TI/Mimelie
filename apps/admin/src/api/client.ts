@@ -11,6 +11,24 @@ export class ApiError extends Error {
 
 export type ApiResponse<T> = { data: T };
 
+export async function uploadFile(file: File): Promise<{ key: string; url: string }> {
+  const form = new FormData();
+  form.append("file", file);
+  const response = await fetch(`${apiBase}/admin/uploads`, {
+    method: "POST",
+    body: form,
+    credentials: "include",
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new ApiError(
+      payload.message ?? "Não foi possível enviar a imagem.",
+      response.status,
+    );
+  }
+  return payload as { key: string; url: string };
+}
+
 /** Every request sends only the HttpOnly session cookie; no browser token exists. */
 export async function apiRequest<T>(
   path: string,

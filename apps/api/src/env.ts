@@ -10,6 +10,7 @@ export type JobMessage =
   | { type: "order.paid"; orderId: string }
   | { type: "offer.expire"; offerId: string }
   | { type: "publication.send"; publicationId: string }
+  | { type: "routine.run"; executionId: string }
   | { type: "newsletter.welcome"; subscriberId: string };
 
 export type Env = {

@@ -8,6 +8,8 @@ const config: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: '**.r2.dev' },
       { protocol: 'https', hostname: 'imagedelivery.net' },
+      { protocol: 'https', hostname: '**.workers.dev' },
+      { protocol: 'https', hostname: '**.mimelie.com' },
     ],
   },
   async headers() {

@@ -24,21 +24,26 @@ import { RoutinePanel } from "../automation/RoutinePanel";
 import { IntegrationPanel } from "../integrations/IntegrationPanel";
 import { PublicationPanel } from "../publishing/PublicationPanel";
 import { StatisticsPanel } from "../analytics/StatisticsPanel";
+import { ProductPanel } from "../products/ProductPanel";
+import { ReconciliationPanel } from "../reconciliation/ReconciliationPanel";
 import type { SessionUser } from "../../api/types";
 
 type Tab =
   | "Visão geral"
   | "Ofertas"
+  | "Produtos"
   | "Categorias"
   | "Comentários"
   | "Usuários"
   | "Rotinas"
   | "Integrações"
   | "Publicações"
-  | "Estatísticas";
+  | "Estatísticas"
+  | "Conciliação";
 const tabs: Array<WorkspaceNavigationItem & { id: Tab }> = [
   { id: "Visão geral", label: "Visão geral", icon: "grid" },
   { id: "Ofertas", label: "Ofertas", icon: "tag" },
+  { id: "Produtos", label: "Produtos", icon: "folder" },
   { id: "Categorias", label: "Categorias", icon: "folder" },
   { id: "Comentários", label: "Comentários", icon: "chat" },
   { id: "Usuários", label: "Usuários", icon: "users" },
@@ -46,6 +51,7 @@ const tabs: Array<WorkspaceNavigationItem & { id: Tab }> = [
   { id: "Integrações", label: "Integrações", icon: "link" },
   { id: "Publicações", label: "Publicações", icon: "send" },
   { id: "Estatísticas", label: "Estatísticas", icon: "chart" },
+  { id: "Conciliação", label: "Conciliação", icon: "activity" },
 ];
 
 export function AdminScreen() {
@@ -84,7 +90,9 @@ function AuthenticatedAdmin({ user }: { user: SessionUser }) {
   const data = offers.data?.data ?? [];
   const stats = statistics.data?.data;
   const management =
-    tab === "Integrações" ? (
+    tab === "Produtos" ? (
+      <ProductPanel />
+    ) : tab === "Integrações" ? (
       <IntegrationPanel />
     ) : tab === "Rotinas" ? (
       <RoutinePanel />
@@ -96,6 +104,8 @@ function AuthenticatedAdmin({ user }: { user: SessionUser }) {
       <PublicationPanel />
     ) : tab === "Estatísticas" ? (
       <StatisticsPanel />
+    ) : tab === "Conciliação" ? (
+      <ReconciliationPanel />
     ) : (
       <CommentPanel />
     );

@@ -11,6 +11,7 @@ import {
   offers,
   orders,
   publications,
+  routineExecutions,
 } from "@mimelie/db";
 
 type EmailBinding = {
@@ -36,6 +37,7 @@ type JobMessage =
   | { type: "order.paid"; orderId: string }
   | { type: "offer.expire"; offerId: string }
   | { type: "publication.send"; publicationId: string }
+  | { type: "routine.run"; executionId: string }
   | { type: "newsletter.welcome"; subscriberId: string };
 
 function brl(cents: number): string {
@@ -135,6 +137,17 @@ async function processJob(job: JobMessage, env: Env): Promise<void> {
         .update(offers)
         .set({ status: "EXPIRED", updatedAt: new Date() })
         .where(eq(offers.id, job.offerId));
+      break;
+    }
+    case "routine.run": {
+      await db
+        .update(routineExecutions)
+        .set({
+          status: "SUCCEEDED",
+          startedAt: new Date(),
+          finishedAt: new Date(),
+        })
+        .where(eq(routineExecutions.id, job.executionId));
       break;
     }
     case "publication.send": {

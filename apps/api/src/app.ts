@@ -9,8 +9,10 @@ import { authRoutes } from "./routes/auth.js";
 import { catalogRoutes } from "./routes/catalog.js";
 import { communityRoutes } from "./routes/community.js";
 import { healthRoutes } from "./routes/health.js";
+import { mediaRoutes } from "./routes/media.js";
 import { newsletterRoutes } from "./routes/newsletter.js";
 import { orderRoutes } from "./routes/orders.js";
+import { reconciliationRoutes } from "./routes/reconciliation.js";
 import { shippingRoutes } from "./routes/shipping.js";
 import { webhookRoutes } from "./routes/webhooks.js";
 
@@ -50,9 +52,11 @@ app.use("/v1/*", async (c, next) => {
 });
 
 app.route("/v1", healthRoutes);
+app.route("/v1", mediaRoutes);
 app.route("/v1", authRoutes);
 app.route("/v1", catalogRoutes);
 app.route("/v1", orderRoutes);
+app.route("/v1", reconciliationRoutes);
 app.route("/v1", communityRoutes);
 app.route("/v1", newsletterRoutes);
 app.route("/v1", shippingRoutes);
