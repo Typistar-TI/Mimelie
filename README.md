@@ -34,9 +34,9 @@ Cloudflare
 
 ## Ambiente publicado
 
-- Loja: https://mimelie-web.vira-ia-br.workers.dev
-- API + painel: https://mimelie-api.vira-ia-br.workers.dev
-- Jobs: https://mimelie-jobs.vira-ia-br.workers.dev
+- Loja: https://mimelie.vira.ia.br
+- API + painel: https://mimelie-api.vira.ia.br
+- Jobs: interno, no Worker `mimelie-jobs`
 - D1: `mimelie-db`
 - R2: `mimelie-media` e `mimelie-next-cache`
 - KV: `SESSIONS`
@@ -46,7 +46,7 @@ O painel é servido pelo Worker da API em `/`, na mesma origem da sessão. Entre
 
 **E-mail:** o binding `send_email` já está publicado, mas o domínio de envio precisa ser habilitado no painel da Cloudflare (Email Service) para os magic links e avisos de pedido saírem. O login do painel por senha funciona sem essa etapa.
 
-Esses endereços `workers.dev` são o preview publicado. Ao configurar os domínios definitivos, atualize `WEB_ORIGIN`, `ADMIN_ORIGIN` e `API_PUBLIC_URL` em `apps/api/wrangler.jsonc` e `API_INTERNAL_URL`, `NEXT_PUBLIC_SITE_URL` e `NEXT_PUBLIC_ADMIN_URL` em `apps/web/wrangler.jsonc`.
+A zona `vira.ia.br` tem uma rota curinga `*.vira.ia.br/*` apontando para o Worker `vira`. Por isso a Mimelie usa rotas explícitas `mimelie.vira.ia.br/*` e `mimelie-api.vira.ia.br/*`, que têm precedência. Se recriar os Workers, mantenha essas rotas em `apps/web/wrangler.jsonc` e `apps/api/wrangler.jsonc`.
 
 ## Decisões de produto para caber em 100% Cloudflare
 

@@ -14,9 +14,9 @@
     "enabled": true
   },
   "vars": {
-    "API_INTERNAL_URL": "https://mimelie-api.vira-ia-br.workers.dev",
-    "NEXT_PUBLIC_SITE_URL": "https://mimelie-web.vira-ia-br.workers.dev",
-    "NEXT_PUBLIC_ADMIN_URL": "https://mimelie-api.vira-ia-br.workers.dev"
+    "API_INTERNAL_URL": "https://mimelie-api.vira.ia.br",
+    "NEXT_PUBLIC_SITE_URL": "https://mimelie.vira.ia.br",
+    "NEXT_PUBLIC_ADMIN_URL": "https://mimelie-api.vira.ia.br"
   },
   "r2_buckets": [
     {
@@ -24,5 +24,16 @@
       "bucket_name": "mimelie-next-cache"
     }
   ],
-  "services": [{ "binding": "API", "service": "mimelie-api" }]
+  "services": [
+    {
+      "binding": "API",
+      "service": "mimelie-api"
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "mimelie.vira.ia.br/*",
+      "zone_name": "vira.ia.br"
+    }
+  ]
 }

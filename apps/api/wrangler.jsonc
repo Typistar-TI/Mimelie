@@ -3,13 +3,20 @@
   "name": "mimelie-api",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-01",
-  "compatibility_flags": ["nodejs_compat"],
-  "observability": { "enabled": true },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true
+  },
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
-    "run_worker_first": ["/v1/*", "/health"]
+    "run_worker_first": [
+      "/v1/*",
+      "/health"
+    ]
   },
   "d1_databases": [
     {
@@ -19,20 +26,39 @@
       "migrations_dir": "../../packages/db/migrations"
     }
   ],
-  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "mimelie-media" }],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "mimelie-media"
+    }
+  ],
   "kv_namespaces": [
-    { "binding": "SESSIONS", "id": "1c186fda0ac54e1daaf73b717d96f0bc" }
+    {
+      "binding": "SESSIONS",
+      "id": "1c186fda0ac54e1daaf73b717d96f0bc"
+    }
   ],
   "queues": {
-    "producers": [{ "binding": "JOBS", "queue": "mimelie-jobs" }]
+    "producers": [
+      {
+        "binding": "JOBS",
+        "queue": "mimelie-jobs"
+      }
+    ]
   },
   "vars": {
     "ENVIRONMENT": "production",
-    "WEB_ORIGIN": "https://mimelie-web.vira-ia-br.workers.dev",
-    "ADMIN_ORIGIN": "https://mimelie-api.vira-ia-br.workers.dev",
-    "API_PUBLIC_URL": "https://mimelie-api.vira-ia-br.workers.dev",
+    "WEB_ORIGIN": "https://mimelie.vira.ia.br",
+    "ADMIN_ORIGIN": "https://mimelie-api.vira.ia.br",
+    "API_PUBLIC_URL": "https://mimelie-api.vira.ia.br",
     "PIX_KEY": "oi@mimelie.com.br",
     "PIX_MERCHANT_NAME": "MIMELIE",
     "PIX_MERCHANT_CITY": "SAO PAULO"
-  }
+  },
+  "routes": [
+    {
+      "pattern": "mimelie-api.vira.ia.br/*",
+      "zone_name": "vira.ia.br"
+    }
+  ]
 }
