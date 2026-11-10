@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "mimelie-api",
+  "name": "mimelie",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-01",
   "compatibility_flags": [
@@ -79,7 +79,14 @@
     "directory": "../web/.open-next/assets",
     "binding": "ASSETS",
     "not_found_handling": "none",
-    "run_worker_first": true,
+    "run_worker_first": [
+      "/",
+      "/_next/image",
+      "/v1/*",
+      "/api/*",
+      "/admin",
+      "/admin/"
+    ],
     "html_handling": "none"
   },
   "triggers": {

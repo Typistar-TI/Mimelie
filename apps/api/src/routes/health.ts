@@ -6,7 +6,7 @@ export const healthRoutes = new Hono<AppEnv>();
 healthRoutes.get("/health", (c) =>
   c.json({
     status: "ok",
-    service: "mimelie-api",
+    service: "mimelie",
     runtime: "cloudflare-workers",
     time: new Date().toISOString(),
   }),

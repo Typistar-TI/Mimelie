@@ -64,7 +64,7 @@ app.route("/v1", webhookRoutes);
 app.route("/v1", adminRoutes);
 
 app.get("/", (c) =>
-  c.json({ service: "mimelie-api", docs: "/v1/health", version: "1.0.0" }),
+  c.json({ service: "mimelie", docs: "/v1/health", version: "1.0.0" }),
 );
 
 app.notFound((c) =>

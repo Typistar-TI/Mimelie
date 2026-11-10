@@ -8,7 +8,7 @@ A fusão reúne a vitrine e o checkout da Mimelie com o catálogo de ofertas, cu
 
 ```text
 Cloudflare
-├─ Worker  mimelie-api
+├─ Worker  mimelie
 │  ├─ mimelie.vira.ia.br         Next.js 16 + OpenNext (loja, ofertas, conteúdo, conta)
 │  ├─ painel-mimelie.vira.ia.br  Vite SPA + /v1 para a API
 │  ├─ api-mimelie.vira.ia.br     Hono (API e webhooks)
@@ -38,7 +38,7 @@ Cloudflare
 - Loja: https://mimelie.vira.ia.br
 - Painel: https://painel-mimelie.vira.ia.br
 - API: https://api-mimelie.vira.ia.br
-- Jobs: dentro do Worker `mimelie-api`
+- Jobs: dentro do Worker `mimelie`
 - D1: `mimelie-db`
 - R2: `mimelie-media` e `mimelie-next-cache`
 - KV: `SESSIONS`
@@ -48,7 +48,7 @@ O painel é servido pelo mesmo Worker da API no host `painel-mimelie.vira.ia.br`
 
 **E-mail:** o binding `send_email` já está publicado, mas o domínio de envio precisa ser habilitado no painel da Cloudflare (Email Service) para os magic links e avisos de pedido saírem. O login do painel por senha funciona sem essa etapa.
 
-A zona `vira.ia.br` tem uma rota curinga `*.vira.ia.br/*` apontando para o Worker `vira`. Por isso a Mimelie usa rotas explícitas `mimelie.vira.ia.br/*`, `painel-mimelie.vira.ia.br/*` e `api-mimelie.vira.ia.br/*` no único Worker `mimelie-api`, que têm precedência. Se recriar o Worker, mantenha essas rotas em `apps/api/wrangler.jsonc`.
+A zona `vira.ia.br` tem uma rota curinga `*.vira.ia.br/*` apontando para o Worker `vira`. Por isso a Mimelie usa rotas explícitas `mimelie.vira.ia.br/*`, `painel-mimelie.vira.ia.br/*` e `api-mimelie.vira.ia.br/*` no único Worker `mimelie`, que têm precedência. Se recriar o Worker, mantenha essas rotas em `apps/api/wrangler.jsonc`.
 
 ## Decisões de produto para caber em 100% Cloudflare
 
