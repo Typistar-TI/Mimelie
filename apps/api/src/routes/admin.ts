@@ -22,12 +22,12 @@ import {
   users,
   variants,
 } from "@mimelie/db";
-import type { AppEnv } from "../types.js";
-import { requireAdmin, requireStaff } from "../lib/auth.js";
-import { encryptSecret } from "../lib/crypto.js";
-import { getDb } from "../lib/db.js";
-import { badRequest, conflict, notFound, parseBody } from "../lib/http.js";
-import { serializeOffer, serializeProduct, serializeUser } from "../lib/serializers.js";
+import type { AppEnv } from "../types";
+import { requireAdmin, requireStaff } from "../lib/auth";
+import { encryptSecret } from "../lib/crypto";
+import { getDb } from "../lib/db";
+import { badRequest, conflict, notFound, parseBody } from "../lib/http";
+import { serializeOffer, serializeProduct, serializeUser } from "../lib/serializers";
 
 export const adminRoutes = new Hono<AppEnv>();
 

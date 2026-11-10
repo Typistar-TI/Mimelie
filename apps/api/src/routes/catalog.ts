@@ -22,10 +22,10 @@ import {
   users,
   variants,
 } from "@mimelie/db";
-import type { AppEnv } from "../types.js";
-import { getDb } from "../lib/db.js";
-import { notFound, parseQuery } from "../lib/http.js";
-import { serializeOffer, serializeProduct } from "../lib/serializers.js";
+import type { AppEnv } from "../types";
+import { getDb } from "../lib/db";
+import { notFound, parseQuery } from "../lib/http";
+import { serializeOffer, serializeProduct } from "../lib/serializers";
 
 export const catalogRoutes = new Hono<AppEnv>();
 

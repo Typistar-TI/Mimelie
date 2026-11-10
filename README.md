@@ -8,10 +8,12 @@ A fusão reúne a vitrine e o checkout da Mimelie com o catálogo de ofertas, cu
 
 ```text
 Cloudflare
-├─ Worker  mimelie-web    Next.js 16 + OpenNext (loja, ofertas, conteúdo, conta)
-├─ Worker  mimelie-api    Hono (API e webhooks) + painel + Queues + Cron
+├─ Worker  mimelie-api
+│  ├─ mimelie.vira.ia.br         Next.js 16 + OpenNext (loja, ofertas, conteúdo, conta)
+│  ├─ painel-mimelie.vira.ia.br  Vite SPA + /v1 para a API
+│  ├─ api-mimelie.vira.ia.br     Hono (API e webhooks)
 │  ├─ D1                 commerce + deals + identity + content + ops
-│  ├─ R2                 mídia, PDFs e backups
+│  ├─ R2                 mídia, PDFs, cache ISR e backups
 │  ├─ KV                 sessão, cache e flags
 │  ├─ Queues             e-mail, publicação, expiração
 │  ├─ Cron Triggers      expiração de ofertas
@@ -46,7 +48,7 @@ O painel é servido pelo mesmo Worker da API no host `painel-mimelie.vira.ia.br`
 
 **E-mail:** o binding `send_email` já está publicado, mas o domínio de envio precisa ser habilitado no painel da Cloudflare (Email Service) para os magic links e avisos de pedido saírem. O login do painel por senha funciona sem essa etapa.
 
-A zona `vira.ia.br` tem uma rota curinga `*.vira.ia.br/*` apontando para o Worker `vira`. Por isso a Mimelie usa rotas explícitas `mimelie.vira.ia.br/*` no Worker web e `painel-mimelie.vira.ia.br/*` + `api-mimelie.vira.ia.br/*` no Worker da API, que têm precedência. Se recriar os Workers, mantenha essas rotas em `apps/web/wrangler.jsonc` e `apps/api/wrangler.jsonc`.
+A zona `vira.ia.br` tem uma rota curinga `*.vira.ia.br/*` apontando para o Worker `vira`. Por isso a Mimelie usa rotas explícitas `mimelie.vira.ia.br/*`, `painel-mimelie.vira.ia.br/*` e `api-mimelie.vira.ia.br/*` no único Worker `mimelie-api`, que têm precedência. Se recriar o Worker, mantenha essas rotas em `apps/api/wrangler.jsonc`.
 
 ## Decisões de produto para caber em 100% Cloudflare
 
@@ -138,11 +140,10 @@ wrangler secret put ADMIN_BOOTSTRAP_TOKEN
 6. Publique:
 
 ```bash
-pnpm deploy:api    # build do painel + Worker da API + filas/cron
-pnpm deploy:web    # OpenNext + Worker da loja
+pnpm deploy:api    # build do painel + OpenNext + Worker único
 ```
 
-O painel é servido pelo próprio Worker da API em `/`, o que mantém o cookie de sessão na mesma origem. Coloque o domínio do painel atrás do **Cloudflare Access**.
+O painel e a loja são servidos pelo mesmo Worker, em hosts diferentes, o que mantém o cookie de sessão do painel na mesma origem.
 
 ## O que já está implementado
 

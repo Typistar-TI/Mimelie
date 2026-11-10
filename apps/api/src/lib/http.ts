@@ -1,7 +1,7 @@
 import { HTTPException } from "hono/http-exception";
 import type { Context } from "hono";
 import type { ZodType } from "zod";
-import type { AppEnv } from "../types.js";
+import type { AppEnv } from "../types";
 
 export function badRequest(message: string): never {
   throw new HTTPException(400, { message });

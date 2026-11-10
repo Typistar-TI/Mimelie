@@ -59,7 +59,8 @@ export function AdminScreen() {
   const user = session.data?.data;
   const isStaff = user?.role === "ADMIN" || user?.role === "EDITOR";
 
-  if (window.location.pathname !== "/")
+  const pathname = window.location.pathname;
+  if (pathname !== "/" && pathname !== "/admin" && pathname !== "/admin/")
     return (
       <NotFoundPage
         homeHref="/"

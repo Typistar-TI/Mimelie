@@ -2,9 +2,9 @@ import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 import { newsletterSubscribers } from "@mimelie/db";
-import type { AppEnv } from "../types.js";
-import { getDb } from "../lib/db.js";
-import { parseBody } from "../lib/http.js";
+import type { AppEnv } from "../types";
+import { getDb } from "../lib/db";
+import { parseBody } from "../lib/http";
 
 export const newsletterRoutes = new Hono<AppEnv>();
 

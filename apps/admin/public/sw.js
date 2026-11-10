@@ -1,5 +1,5 @@
 const CACHE = "mimelie-admin-v1";
-const SHELL = ["/"];
+const SHELL = ["/admin/"];
 self.addEventListener("install", (event) =>
   event.waitUntil(
     caches

@@ -7,13 +7,14 @@
     "build": "next build",
     "start": "next start",
     "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
     "test": "node --test"
   },
   "dependencies": {
+    "@mimelie/api": "workspace:*",
     "@mimelie/contracts": "workspace:*",
+    "@mimelie/db": "workspace:*",
     "@mimelie/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.5",
     "next": "^16.4.5",

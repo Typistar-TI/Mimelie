@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { z } from "zod";
-import type { AppEnv } from "../types.js";
-import { parseQuery } from "../lib/http.js";
-import { quoteShipping } from "../lib/shipping.js";
+import type { AppEnv } from "../types";
+import { parseQuery } from "../lib/http";
+import { quoteShipping } from "../lib/shipping";
 
 export const shippingRoutes = new Hono<AppEnv>();
 

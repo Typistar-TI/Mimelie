@@ -17,7 +17,7 @@ const config: NextConfig = {
     NEXT_PUBLIC_SITE_URL: siteUrl,
     NEXT_PUBLIC_ADMIN_URL: adminUrl,
   },
-  transpilePackages: ['@mimelie/contracts', '@mimelie/ui'],
+  transpilePackages: ['@mimelie/contracts', '@mimelie/ui', '@mimelie/api', '@mimelie/db'],
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

@@ -5,11 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "mkdir -p public && (test -f public/index.html || printf '<!doctype html><title>Mimelie API</title>' > public/index.html) && wrangler dev --port 8788",
-    "deploy": "pnpm build:admin && wrangler deploy",
+    "deploy": "pnpm --filter @mimelie/admin build && pnpm --filter @mimelie/web exec opennextjs-cloudflare build && rm -rf ../web/.open-next/assets/admin && cp -r ../admin/dist ../web/.open-next/assets/admin && wrangler deploy",
     "typecheck": "tsc --noEmit",
     "test": "node --test",
-    "build": "tsc --noEmit",
-    "build:admin": "pnpm --filter @mimelie/admin build && rm -rf public && cp -r ../admin/dist public"
+    "build": "tsc --noEmit"
   },
   "dependencies": {
     "@mimelie/contracts": "workspace:*",
@@ -22,5 +21,16 @@
     "@cloudflare/workers-types": "^5.20260820.1",
     "typescript": "^5.8.3",
     "wrangler": "^4.159.0"
-  }
+  },
+  "exports": {
+    ".": {
+      "types": "./src/public.d.ts",
+      "default": "./src/app.ts"
+    },
+    "./jobs": {
+      "types": "./src/public.d.ts",
+      "default": "./src/jobs.ts"
+    }
+  },
+  "types": "./src/public.d.ts"
 }

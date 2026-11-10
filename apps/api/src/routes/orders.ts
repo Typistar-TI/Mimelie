@@ -13,24 +13,24 @@ import {
   shipments,
   variants,
 } from "@mimelie/db";
-import type { AppEnv } from "../types.js";
-import { requireStaff } from "../lib/auth.js";
+import type { AppEnv } from "../types";
+import { requireStaff } from "../lib/auth";
 import {
   decryptSecret,
   encryptSecret,
   randomToken,
   sha256,
-} from "../lib/crypto.js";
-import { getDb } from "../lib/db.js";
+} from "../lib/crypto";
+import { getDb } from "../lib/db";
 import {
   badRequest,
   conflict,
   notFound,
   parseBody,
-} from "../lib/http.js";
-import { buildPixPayload } from "../lib/pix.js";
-import { serializeOrder } from "../lib/serializers.js";
-import { quoteShipping } from "../lib/shipping.js";
+} from "../lib/http";
+import { buildPixPayload } from "../lib/pix";
+import { serializeOrder } from "../lib/serializers";
+import { quoteShipping } from "../lib/shipping";
 
 export const orderRoutes = new Hono<AppEnv>();
 

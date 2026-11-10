@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { webhookEvents } from "@mimelie/db";
-import type { AppEnv } from "../types.js";
-import { getDb } from "../lib/db.js";
+import type { AppEnv } from "../types";
+import { getDb } from "../lib/db";
 
 export const webhookRoutes = new Hono<AppEnv>();
 

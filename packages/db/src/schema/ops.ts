@@ -5,7 +5,7 @@ import {
   text,
   uniqueIndex,
 } from "drizzle-orm/sqlite-core";
-import { id, timestamps } from "./core.js";
+import { id, timestamps } from "./core";
 
 export const integrations = sqliteTable("integrations", {
   id: id(),

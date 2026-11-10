@@ -2,13 +2,13 @@ import { and, eq, gt, isNull } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 import { magicLinks, users } from "@mimelie/db";
-import type { AppEnv } from "../types.js";
+import type { AppEnv } from "../types";
 import {
   createSession,
   issueCsrfToken,
   requireUser,
   revokeSession,
-} from "../lib/auth.js";
+} from "../lib/auth";
 import {
   decryptSecret,
   encryptSecret,
@@ -19,9 +19,9 @@ import {
   totpUri,
   verifyPassword,
   verifyTotp,
-} from "../lib/crypto.js";
-import { getDb } from "../lib/db.js";
-import { badRequest, conflict, parseBody, unauthorized } from "../lib/http.js";
+} from "../lib/crypto";
+import { getDb } from "../lib/db";
+import { badRequest, conflict, parseBody, unauthorized } from "../lib/http";
 
 export const authRoutes = new Hono<AppEnv>();
 

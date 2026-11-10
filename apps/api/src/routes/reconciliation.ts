@@ -1,13 +1,13 @@
 import { Hono } from "hono";
 import { z } from "zod";
-import type { AppEnv } from "../types.js";
-import { requireStaff } from "../lib/auth.js";
-import { parseBody } from "../lib/http.js";
+import type { AppEnv } from "../types";
+import { requireStaff } from "../lib/auth";
+import { parseBody } from "../lib/http";
 import {
   applyMatches,
   matchEntries,
   parseBankStatement,
-} from "../lib/reconciliation.js";
+} from "../lib/reconciliation";
 
 export const reconciliationRoutes = new Hono<AppEnv>();
 

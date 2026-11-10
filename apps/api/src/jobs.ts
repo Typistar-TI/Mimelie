@@ -11,8 +11,8 @@ import {
   publications,
   routineExecutions,
 } from "@mimelie/db";
-import type { Env, JobMessage } from "./env.js";
-import { getDb } from "./lib/db.js";
+import type { Env, JobMessage } from "./env";
+import { getDb } from "./lib/db";
 
 function brl(cents: number): string {
   return new Intl.NumberFormat("pt-BR", {

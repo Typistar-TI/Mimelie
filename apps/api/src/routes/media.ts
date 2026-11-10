@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import type { AppEnv } from "../types.js";
-import { requireStaff } from "../lib/auth.js";
-import { badRequest, notFound } from "../lib/http.js";
+import type { AppEnv } from "../types";
+import { requireStaff } from "../lib/auth";
+import { badRequest, notFound } from "../lib/http";
 
 export const mediaRoutes = new Hono<AppEnv>();
 

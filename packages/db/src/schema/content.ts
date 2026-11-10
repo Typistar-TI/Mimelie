@@ -1,5 +1,5 @@
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { id, timestamps } from "./core.js";
+import { id, timestamps } from "./core";
 
 export const contentPosts = sqliteTable(
   "content_posts",

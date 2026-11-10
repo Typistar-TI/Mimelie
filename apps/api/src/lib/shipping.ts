@@ -1,7 +1,7 @@
 import { and, eq, gte, lte } from "drizzle-orm";
 import { shippingZones } from "@mimelie/db";
-import type { Env } from "../env.js";
-import { getDb } from "./db.js";
+import type { Env } from "../env";
+import { getDb } from "./db";
 
 export type ShippingQuote = {
   priceCents: number;

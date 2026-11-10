@@ -91,9 +91,15 @@ importers:
 
   apps/web:
     dependencies:
+      '@mimelie/api':
+        specifier: workspace:*
+        version: link:../api
       '@mimelie/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@mimelie/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@mimelie/ui':
         specifier: workspace:*
         version: link:../../packages/ui

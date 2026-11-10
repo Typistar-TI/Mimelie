@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { orders, outboxEvents, payments } from "@mimelie/db";
-import type { Env } from "../env.js";
-import { getDb } from "./db.js";
+import type { Env } from "../env";
+import { getDb } from "./db";
 
 export type BankEntry = {
   externalId: string;

@@ -19,7 +19,6 @@
     "db:migrate:remote": "pnpm --filter @mimelie/api exec wrangler d1 migrations apply mimelie-db --remote",
     "db:seed:local": "pnpm --filter @mimelie/api exec wrangler d1 execute mimelie-db --local --file=../../packages/db/seed.sql",
     "deploy:api": "pnpm --filter @mimelie/api run deploy",
-    "deploy:web": "pnpm --filter @mimelie/web run deploy",
     "db:seed:remote": "pnpm --filter @mimelie/api exec wrangler d1 execute mimelie-db --remote --file=../../packages/db/seed.sql"
   },
   "devDependencies": {

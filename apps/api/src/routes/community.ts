@@ -10,11 +10,11 @@ import {
   stores,
   users,
 } from "@mimelie/db";
-import type { AppEnv } from "../types.js";
-import { requireStaff, requireUser } from "../lib/auth.js";
-import { getDb } from "../lib/db.js";
-import { parseBody } from "../lib/http.js";
-import { serializeOffer } from "../lib/serializers.js";
+import type { AppEnv } from "../types";
+import { requireStaff, requireUser } from "../lib/auth";
+import { getDb } from "../lib/db";
+import { parseBody } from "../lib/http";
+import { serializeOffer } from "../lib/serializers";
 
 export const communityRoutes = new Hono<AppEnv>();
 

@@ -3,9 +3,9 @@ import type { Context } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
 import { sessions, users } from "@mimelie/db";
-import type { AppEnv, SessionUser } from "../types.js";
-import { hashIp, randomToken, sha256 } from "./crypto.js";
-import { getDb } from "./db.js";
+import type { AppEnv, SessionUser } from "../types";
+import { hashIp, randomToken, sha256 } from "./crypto";
+import { getDb } from "./db";
 
 export const SESSION_COOKIE = "mimelie_session";
 export const CSRF_COOKIE = "csrf_token";

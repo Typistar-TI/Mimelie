@@ -21,6 +21,10 @@
     {
       "binding": "MEDIA",
       "bucket_name": "mimelie-media"
+    },
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "mimelie-next-cache"
     }
   ],
   "kv_namespaces": [
@@ -54,9 +58,14 @@
     "PIX_KEY": "oi@mimelie.com.br",
     "PIX_MERCHANT_NAME": "MIMELIE",
     "PIX_MERCHANT_CITY": "SAO PAULO",
-    "EMAIL_FROM": "oi@mimelie.com.br"
+    "EMAIL_FROM": "oi@mimelie.com.br",
+    "API_INTERNAL_URL": "https://api-mimelie.vira.ia.br"
   },
   "routes": [
+    {
+      "pattern": "mimelie.vira.ia.br/*",
+      "zone_name": "vira.ia.br"
+    },
     {
       "pattern": "api-mimelie.vira.ia.br/*",
       "zone_name": "vira.ia.br"
@@ -67,10 +76,11 @@
     }
   ],
   "assets": {
-    "directory": "./public",
+    "directory": "../web/.open-next/assets",
     "binding": "ASSETS",
-    "not_found_handling": "single-page-application",
-    "run_worker_first": true
+    "not_found_handling": "none",
+    "run_worker_first": true,
+    "html_handling": "none"
   },
   "triggers": {
     "crons": [

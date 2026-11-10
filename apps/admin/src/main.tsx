@@ -20,7 +20,7 @@ for (const rel of ["icon", "apple-touch-icon"]) {
 if ("serviceWorker" in navigator) {
   window.addEventListener(
     "load",
-    () => void navigator.serviceWorker.register("/sw.js"),
+    () => void navigator.serviceWorker.register("/admin/sw.js"),
   );
 }
 
